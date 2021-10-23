@@ -11,8 +11,8 @@ export function ContactsForm({ onAddContact }) {
   const numberId = uuidv4();
 
   const handleInputChange = e => {
-    const { value } = e.target;
-    switch (e) {
+    const { name, value } = e.target;
+    switch (name) {
       case 'name':
         setName(value);
         break;

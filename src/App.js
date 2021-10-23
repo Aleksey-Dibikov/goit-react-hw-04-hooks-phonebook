@@ -28,37 +28,33 @@ function App() {
   }, [contacts]);
 
   const addContact = ({ name, number }) => {
-    const contact = {
-      id: idContact,
-      name,
-      number,
-    };
-    if (contacts.some(e => e.name === contact.name)) {
-      alert(`${contact.name} is already in contacts`);
-      return;
-    }
-    if (contact.name.length === 0) {
+    const searchName = contacts.map(contact => contact.name).includes(name);
+
+    if (searchName) {
+      alert(`${name} is already in contacts`);
+    } else if (name.length === 0) {
       alert('Fields must be filled!');
-      return;
+    } else {
+      const contact = {
+        id: idContact,
+        name,
+        number,
+      };
+      setContacts([...contacts, contact]);
     }
-    setContacts([...contacts, contact]);
   };
 
   const deleteContact = contactId => {
     setContacts(contacts.filter(contact => contact.id !== contactId));
   };
 
-  const changeFilter = e => {
-    setFilter(e.target.value);
+  const changeFilter = event => {
+    setFilter(event.target.value);
   };
 
-  const getVisibleContacts = ({ contacts, filter }) => {
-    const normalizedFilter = filter.toLowerCase();
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().includes(normalizedFilter),
-    );
-  };
-
+  const visibleContacts = contacts.filter(({ name }) =>
+    name.toLowerCase().includes(filter.toLowerCase()),
+  );
   // class App extends Component {
   //   state = {
   //     contacts: [
@@ -129,15 +125,11 @@ function App() {
 
       <h2>Contacts</h2>
 
-      {getVisibleContacts.length >= 1 && (
+      {visibleContacts.length >= 1 && (
         <Filter value={filter} onChangeFilter={changeFilter} />
       )}
 
-      <ContactList
-        contacts={contacts}
-        visible={getVisibleContacts}
-        onDeleteContact={deleteContact}
-      />
+      <ContactList contacts={visibleContacts} onDeleteContact={deleteContact} />
     </div>
   );
 }
